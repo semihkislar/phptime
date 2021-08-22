@@ -13,7 +13,14 @@ class CrateDevicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('devices',)
+        Schema::create('devices', function(Blueprint $table){
+            $table->increments('id');
+            $table->string('udid', 40)->index();
+            $table->string('os', 15)->index();
+            $table->string('os_version');
+            $table->string('device_model')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -23,6 +30,6 @@ class CrateDevicesTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('devices');
     }
 }
