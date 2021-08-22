@@ -17,3 +17,6 @@ Route::get('/', function () {
 });
 
 Route::post('/register-device', 'App\Http\Controllers\DeviceController@register')->name('register');
+
+//Mock API routes
+Route::post('/google-mock-api', 'App\Http\Controllers\MockApiController@google')->name('google-mock');
