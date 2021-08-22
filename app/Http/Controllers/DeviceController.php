@@ -6,6 +6,7 @@ use App\Models\Device;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 
 class DeviceController extends Controller
 {
@@ -47,6 +48,14 @@ class DeviceController extends Controller
         $deviceData['client_token'] = $clientToken;
         $device = Device::create($deviceData);
         return ['device' => $device];
+    }
+
+    public function checkMock(){
+        $response = Http::post('/api/google-mock-api', [
+            'client_token' => 'c8595464-bd53-481f-be7b-3e6de0fdebad',
+            'reciept' => 'denemedenem1',
+        ]);
+        return $response;
     }
 
     private function generateToken()

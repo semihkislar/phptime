@@ -17,3 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/register-device', 'App\Http\Controllers\DeviceController@register')->name('register');
+Route::post('/purchase', 'App\Http\Controllers\DeviceController@checkMock')->name('purchase');
+
+//Mock API routes
+Route::post('/google-mock-api', 'App\Http\Controllers\MockApiController@google')->name('google-mock');
+Route::post('/apple-mock-api', 'App\Http\Controllers\MockApiController@apple')->name('apple-mock');

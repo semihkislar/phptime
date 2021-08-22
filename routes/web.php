@@ -15,9 +15,3 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::post('/register-device', 'App\Http\Controllers\DeviceController@register')->name('register');
-
-//Mock API routes
-Route::post('/google-mock-api', 'App\Http\Controllers\MockApiController@google')->name('google-mock');
-Route::post('/apple-mock-api', 'App\Http\Controllers\MockApiController@apple')->name('google-mock');

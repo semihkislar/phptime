@@ -13,6 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'register-device',
-        'google-mock-api'
+        'google-mock-api',
+        'purchase'
     ];
 }
