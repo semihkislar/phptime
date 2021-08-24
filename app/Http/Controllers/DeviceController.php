@@ -34,14 +34,23 @@ class DeviceController extends Controller
             $validationErrors = $validator->failed();
 
             if (isset($validationErrors['udid']['Unique'])) {
-                return "bu udid var";
+                return response()->json([
+                    'status' => 'failure',
+                    'error' => 'There is a device registered with this udid',
+                ]);
             }
 
             if (isset($validationErrors['app_id']['Exists'])) {
-                return "böyle bir uygulama yok";
+                return response()->json([
+                    'status' => 'failure',
+                    'error' => 'No application with this app_id',
+                ]);
             }
 
-            return "eksiz parametre";
+            return response()->json([
+                'status' => 'failure',
+                'error' => 'Invalid Request',
+            ]);
         }
 
         $clientToken = $this->generateToken();
