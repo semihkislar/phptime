@@ -27,7 +27,7 @@ class SubscriptionController extends Controller
 
     public function checkMock(Request $request)
     {
-
+        //If client_token is not stable we have change this request with device_id or udid
         $validationRules = [
             'client_token' => 'required|max:36|exists:devices,client_token',
             'reciept' => 'required',
@@ -76,6 +76,7 @@ class SubscriptionController extends Controller
             ]);
         }
 
+        //If client_token is not stable we have change this request with device_id or udid
         $requestResponse = Http::post('http://nginx:80/api/google-mock-api', [
             'client_token' => $recieptData['client_token'],
             'reciept' => $recieptData['reciept'],
@@ -96,5 +97,9 @@ class SubscriptionController extends Controller
         }
 
         return response()->json($response);
+    }
+
+    public function checkSubscription(Request $request){
+
     }
 }

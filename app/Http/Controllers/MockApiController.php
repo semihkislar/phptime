@@ -40,6 +40,7 @@ class MockApiController extends Controller
 
     public function apple(Request $request)
     {
+        //If client_token is not stable we have change this request with device_id or udid
         $validator = Validator::make(request()->all(), [
             'client_token' => 'required|string',
             'reciept' => 'required',
