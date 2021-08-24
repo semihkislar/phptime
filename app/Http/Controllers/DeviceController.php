@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
-use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class DeviceController extends Controller
 {
@@ -30,6 +29,8 @@ class DeviceController extends Controller
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
+        $deviceData = $request->only(['udid', 'app_id', 'os', 'os_version', 'device_model']);
+
         if ($validator->fails()) {
             $validationErrors = $validator->failed();
 
@@ -52,11 +53,12 @@ class DeviceController extends Controller
                 'error' => 'Invalid Request',
             ]);
         }
-
         $clientToken = $this->generateToken();
-        $deviceData = $request->only(['udid', 'app_id', 'os', 'os_version', 'device_model']);
+
         $deviceData['client_token'] = $clientToken;
         $device = Device::create($deviceData);
+        Cache::put('device:' . $deviceData['udid'] . ":" . $deviceData['app_id'], $device);
+
         return ['device' => $device];
     }
 

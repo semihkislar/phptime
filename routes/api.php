@@ -18,7 +18,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register-device', 'App\Http\Controllers\DeviceController@register')->name('register');
+Route::post('/register-device', 'App\Http\Controllers\DeviceController@register')->name('register')->middleware('device');
 
 Route::post('/purchase', 'App\Http\Controllers\SubscriptionController@checkMock')->name('purchase');
 Route::post('/check-subscription', 'App\Http\Controllers\SubscriptionController@checkSubscription')->name('check-subscription');
