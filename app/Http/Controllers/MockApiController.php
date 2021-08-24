@@ -2,50 +2,67 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class MockApiController extends Controller
 {
     //
 
-    public function google(Request $request){
-        $data  = $request->all();
-        if(isset($data['client_token']) && isset($data['reciept'])){
-            $lastCharacter = intval(substr($data['reciept'], -1));
-            $status =  $lastCharacter % 2 === 0 ? false : true;
-            if ($status == true){
-                $random = Carbon::today()->addDays(rand(0, 365));
-                return array(
-                    'status' => $status,
-                    'expire-date' => Carbon::parse($random)->format('Y-m-d H:i:s')
-                );
-            }else{
-                return array(
-                    'status' => $status
-                );
-            }
+    public function google(Request $request)
+    {
+        $validator = Validator::make(request()->all(), [
+            'client_token' => 'required|string',
+            'reciept' => 'required',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'failure',
+                'error' => 'Invalid Request',
+            ]);
         }
+
+        $lastCharacter = intval(substr($request->post('reciept'), -1));
+        $status = $lastCharacter % 2 === 0 ? false : true;
+
+        $response = [
+            'status' => $status,
+        ];
+
+        if ($status) {
+            $response['expire-date'] = Carbon::now()->addDays(rand(1, 365))->utcOffset(-360)->format('Y-m-d H:i:s');
+        }
+
+        return response()->json($response);
     }
 
-    public function apple(Request $request){
-        $data  = $request->all();
-        if(isset($data['client_token']) && isset($data['reciept'])){
-            $lastCharacter = intval(substr($data['reciept'], -1));
-            $status =  $lastCharacter % 2 === 0 ? false : true;
-            if ($status == true){
-                $random = Carbon::today()->addDays(rand(0, 365));
-                return array(
-                    'status' => $status,
-                    'expire-date' => Carbon::parse($random)->format('Y-m-d H:i:s')
-                );
-            }else{
-                return array(
-                    'status' => $status
-                );
-            }
+    public function apple(Request $request)
+    {
+        $validator = Validator::make(request()->all(), [
+            'client_token' => 'required|string',
+            'reciept' => 'required',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'failure',
+                'error' => 'Invalid Request',
+            ]);
         }
+
+        $lastCharacter = intval(substr($request->post('reciept'), -1));
+        $status = $lastCharacter % 2 === 0 ? false : true;
+
+        $response = [
+            'status' => $status,
+        ];
+
+        if ($status) {
+            $response['expire-date'] = Carbon::now()->addDays(rand(1, 365))->utcOffset(-360)->format('Y-m-d H:i:s');
+        }
+
+        return response()->json($response);
     }
 }

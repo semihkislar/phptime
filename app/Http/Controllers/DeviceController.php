@@ -50,11 +50,39 @@ class DeviceController extends Controller
         return ['device' => $device];
     }
 
-    public function checkMock(){
-        $response = Http::post('/api/google-mock-api', [
-            'client_token' => 'c8595464-bd53-481f-be7b-3e6de0fdebad',
-            'reciept' => 'denemedenem1',
+    public function checkMock(Request $request)
+    {
+
+        $validationRules = [
+            'client_token' => 'required|max:36|exists:devices,client_token',
+            'reciept' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            $validationErrors = $validator->failed();
+
+            if (isset($validationErrors['client_token']['Exists'])) {
+                return response()->json([
+                    'status' => 'failure',
+                    'error' => 'Client Token Doesnt Exists',
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'failure',
+                'error' => 'Invalid Request',
+            ]);
+        }
+
+        $recieptData = $request->only(['client_token', 'reciept']);
+
+        $response = Http::post('http://nginx:80/api/google-mock-api', [
+            'client_token' => $recieptData['client_token'],
+            'reciept' => $recieptData['reciept'],
         ]);
+
         return $response;
     }
 
