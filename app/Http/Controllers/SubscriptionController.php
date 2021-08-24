@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subscription;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
@@ -65,7 +66,10 @@ class SubscriptionController extends Controller
 
         if (Subscription::where('client_token', $recieptData['client_token'])->where('app_id', $recieptData['app_id'])->exists()) {
 
-            $subscription = Subscription::where('client_token', $recieptData['client_token'])->where('app_id', $recieptData['app_id'])->first();
+            $subscription = Subscription::where('client_token', $recieptData['client_token'])
+                ->where('app_id', $recieptData['app_id'])
+                ->first();
+
             return response()->json([
                 'status' => 'success',
                 'subscription' => ([
@@ -99,7 +103,50 @@ class SubscriptionController extends Controller
         return response()->json($response);
     }
 
-    public function checkSubscription(Request $request){
+    public function checkSubscription(Request $request)
+    {
+        //If client_token is not stable we have change this request with device_id or udid
+        $validationRules = [
+            'client_token' => 'required|max:36|exists:devices,client_token'
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            $validationErrors = $validator->failed();
+
+            if (isset($validationErrors['client_token']['Exists'])) {
+                return response()->json([
+                    'status' => 'failure',
+                    'error' => 'Client Token Doesnt Exists',
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'failure',
+                'error' => 'Invalid Request',
+            ]);
+        }
+
+        $requestData = $request->only(['client_token']);
+        $subscription = Subscription::where('client_token', $requestData['client_token'])
+            ->whereDate('expire_date', '>', Carbon::now()->utcOffset(-360)->format('Y-m-d H:i:s'))
+            ->first();
+
+        if ($subscription) {
+            return response()->json([
+                'status' => 'success',
+                'subscription' => ([
+                    'client_token' => $subscription->client_token,
+                    'app_id' => $subscription->app_id,
+                    'expire_date' => $subscription->expire_date,
+                ]),
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'failure',
+            ]);
+        }
 
     }
 }

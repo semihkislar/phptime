@@ -19,7 +19,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/register-device', 'App\Http\Controllers\DeviceController@register')->name('register');
+
 Route::post('/purchase', 'App\Http\Controllers\SubscriptionController@checkMock')->name('purchase');
+Route::post('/check-subscription', 'App\Http\Controllers\SubscriptionController@checkSubscription')->name('check-subscription');
 
 //Mock API routes
 Route::post('/google-mock-api', 'App\Http\Controllers\MockApiController@google')->name('google-mock');
