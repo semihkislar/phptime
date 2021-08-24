@@ -64,9 +64,15 @@ class SubscriptionController extends Controller
         $recieptData = $request->only(['client_token', 'reciept', 'app_id', 'os']);
 
         if(Subscription::where('client_token', $recieptData['client_token'])->where('app_id',$recieptData['app_id'])->exists()) {
+
+            $subscription = Subscription::where('client_token', $recieptData['client_token'])->where('app_id',$recieptData['app_id'])->first();
             return response()->json([
-                'status' => 'failure',
-                'error' => 'This device already subscribed to this application',
+                'status' => 'success',
+                'subscription' => ([
+                    'client_token' => $subscription->client_token,
+                    'app_id' => $subscription->app_id,
+                    'expire_date' => $subscription->expire_date,
+                ]),
             ]);
         }
 
