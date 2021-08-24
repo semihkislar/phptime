@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
 
 class SubscriptionController extends Controller
 {
@@ -66,11 +67,7 @@ class SubscriptionController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'subscription' => ([
-                    'client_token' => $subscription->client_token,
-                    'app_id' => $subscription->app_id,
-                    'expire_date' => $subscription->expire_date,
-                ]),
+                'subscription' => $subscription,
             ]);
         }
 
@@ -83,12 +80,14 @@ class SubscriptionController extends Controller
         $response['status'] = $requestResponse['status'];
 
         if ($requestResponse['status']) {
-            Subscription::create([
+            $subscription = Subscription::create([
                 'app_id' => $recieptData['app_id'],
                 'client_token' => $recieptData['client_token'],
                 'expire_date' => $requestResponse['expire-date'],
                 'os' => $recieptData['os']
             ]);
+
+            Cache::put("subscription:" . $recieptData['client_token'] . ":" . $recieptData['app_id'], $subscription);
 
             $response['client_token'] = $recieptData['client_token'];
             $response['expire_date'] = $requestResponse['expire-date'];
@@ -130,11 +129,7 @@ class SubscriptionController extends Controller
         if ($subscription) {
             return response()->json([
                 'status' => 'success',
-                'subscription' => ([
-                    'client_token' => $subscription->client_token,
-                    'app_id' => $subscription->app_id,
-                    'expire_date' => $subscription->expire_date,
-                ]),
+                'subscription' => $subscription,
             ]);
         } else {
             return response()->json([

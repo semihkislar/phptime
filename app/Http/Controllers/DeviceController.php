@@ -40,7 +40,7 @@ class DeviceController extends Controller
             if (isset($validationErrors['udid']['Unique'])) {
                 $device = Device::where('udid', $deviceData['udid'])->first();
                 Cache::put('device:' . $deviceData['udid'] . ":" . $deviceData['app_id'], $device);
-
+                return response()->json(['device' => $device]);
             }
 
             if (isset($validationErrors['app_id']['Exists'])) {
