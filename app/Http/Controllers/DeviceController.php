@@ -31,14 +31,16 @@ class DeviceController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
         $deviceData = $request->only(['udid', 'app_id', 'os', 'os_version', 'device_model']);
 
+        $clientToken = $this->generateToken();
+        $deviceData['client_token'] = $clientToken;
+
         if ($validator->fails()) {
             $validationErrors = $validator->failed();
 
             if (isset($validationErrors['udid']['Unique'])) {
-                return response()->json([
-                    'status' => 'failure',
-                    'error' => 'There is a device registered with this udid',
-                ]);
+                $device = Device::where('udid', $deviceData['udid'])->first();
+                Cache::put('device:' . $deviceData['udid'] . ":" . $deviceData['app_id'], $device);
+
             }
 
             if (isset($validationErrors['app_id']['Exists'])) {
@@ -53,9 +55,7 @@ class DeviceController extends Controller
                 'error' => 'Invalid Request',
             ]);
         }
-        $clientToken = $this->generateToken();
 
-        $deviceData['client_token'] = $clientToken;
         $device = Device::create($deviceData);
         Cache::put('device:' . $deviceData['udid'] . ":" . $deviceData['app_id'], $device);
 

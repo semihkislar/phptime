@@ -20,12 +20,6 @@ class SubscriptionController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
     public function checkMock(Request $request)
     {
         //If client_token is not stable we have change this request with device_id or udid
