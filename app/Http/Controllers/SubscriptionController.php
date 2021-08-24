@@ -35,6 +35,7 @@ class SubscriptionController extends Controller
             'app_id' => 'required|exists:applications,id'
         ];
 
+
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
@@ -61,6 +62,13 @@ class SubscriptionController extends Controller
         }
 
         $recieptData = $request->only(['client_token', 'reciept', 'app_id', 'os']);
+
+        if(Subscription::where('client_token', $recieptData['client_token'])->where('app_id',$recieptData['app_id'])->exists()) {
+            return response()->json([
+                'status' => 'failure',
+                'error' => 'This device already subscribed to this application',
+            ]);
+        }
 
         $requestResponse = Http::post('http://nginx:80/api/google-mock-api', [
             'client_token' => $recieptData['client_token'],
