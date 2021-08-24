@@ -18,7 +18,7 @@ class CreateSubscriptionsTable extends Migration
             $table->integer('app_id')->index('app_id');
             $table->string('client_token')->index('client_token');
             $table->timestamp('expire_date');
-            $table->string('os');
+            $table->string('os')->index('os');
             $table->timestamps();
         });
     }
