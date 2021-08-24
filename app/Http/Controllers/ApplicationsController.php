@@ -30,7 +30,7 @@ class ApplicationsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -41,7 +41,7 @@ class ApplicationsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Applications  $applications
+     * @param \App\Models\Applications $applications
      * @return \Illuminate\Http\Response
      */
     public function show(Applications $applications)
@@ -52,7 +52,7 @@ class ApplicationsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Applications  $applications
+     * @param \App\Models\Applications $applications
      * @return \Illuminate\Http\Response
      */
     public function edit(Applications $applications)
@@ -63,8 +63,8 @@ class ApplicationsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Applications  $applications
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Applications $applications
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Applications $applications)
@@ -75,7 +75,7 @@ class ApplicationsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Applications  $applications
+     * @param \App\Models\Applications $applications
      * @return \Illuminate\Http\Response
      */
     public function destroy(Applications $applications)
