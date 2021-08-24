@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Subscription;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
 
 class SubscriptionController extends Controller
 {
@@ -22,64 +24,63 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function checkMock(Request $request)
     {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Subscription  $subscription
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Subscription $subscription)
-    {
-        //
-    }
+        $validationRules = [
+            'client_token' => 'required|max:36|exists:devices,client_token',
+            'reciept' => 'required',
+            'os' => 'required',
+            'app_id' => 'required|exists:applications,id'
+        ];
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Subscription  $subscription
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Subscription $subscription)
-    {
-        //
-    }
+        $validator = Validator::make($request->all(), $validationRules);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Subscription  $subscription
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Subscription $subscription)
-    {
-        //
-    }
+        if ($validator->fails()) {
+            $validationErrors = $validator->failed();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Subscription  $subscription
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Subscription $subscription)
-    {
-        //
+            if (isset($validationErrors['client_token']['Exists'])) {
+                return response()->json([
+                    'status' => 'failure',
+                    'error' => 'Client Token Doesnt Exists',
+                ]);
+            }
+
+            if (isset($validationErrors['app_id']['Exists'])) {
+                return response()->json([
+                    'status' => 'failure',
+                    'error' => 'Application Doesnt Exists',
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'failure',
+                'error' => 'Invalid Request',
+            ]);
+        }
+
+        $recieptData = $request->only(['client_token', 'reciept', 'app_id', 'os']);
+
+        $requestResponse = Http::post('http://nginx:80/api/google-mock-api', [
+            'client_token' => $recieptData['client_token'],
+            'reciept' => $recieptData['reciept'],
+        ]);
+
+        $response['status'] = $requestResponse['status'];
+
+        if ($requestResponse['status']) {
+            Subscription::create([
+                'app_id' => $recieptData['app_id'],
+                'client_token' => $recieptData['client_token'],
+                'expire_date' => $requestResponse['expire-date'],
+                'os' => $recieptData['os']
+            ]);
+
+            $response['client_token'] = $recieptData['client_token'];
+            $response['expire_date'] = $requestResponse['expire-date'];
+        }
+
+        return response()->json($response);
     }
 }
