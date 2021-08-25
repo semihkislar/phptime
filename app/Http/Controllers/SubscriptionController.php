@@ -46,7 +46,8 @@ class SubscriptionController extends Controller
             ->first();
 
         if ($subscription) {
-            return Response::success(['subscription' => $subscription]);
+            Cache::put("subscription:" . $recieptData['client_token'] . ":" . $recieptData['app_id'], $subscription);
+            return Response::success($subscription);
         }
 
         //If client_token is not stable we have change this request with device_id or udid
@@ -61,14 +62,14 @@ class SubscriptionController extends Controller
             $subscription = Subscription::create([
                 'app_id' => $recieptData['app_id'],
                 'client_token' => $recieptData['client_token'],
-                'expire_date' => $requestResponse['expire-date'],
+                'expire_date' => $requestResponse['data']['expire_date'],
                 'os' => $recieptData['os']
             ]);
 
             Cache::put("subscription:" . $recieptData['client_token'] . ":" . $recieptData['app_id'], $subscription);
 
             $response['client_token'] = $recieptData['client_token'];
-            $response['expire_date'] = $requestResponse['expire-date'];
+            $response['expire_date'] = $requestResponse['expire_date'];
         }
 
         return Response::success($response);

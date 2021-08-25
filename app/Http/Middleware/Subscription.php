@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\ApiService\Response;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -21,7 +22,7 @@ class Subscription
         if (Cache::has("subscription:" . $requestData['client_token'] . ":" . $requestData['app_id'])) {
             $subscription = Cache::get("subscription:" . $requestData['client_token'] . ":" . $requestData['app_id']);
 
-            return response()->json(['device' => $subscription], 200);
+            return Response::success(['device' => $subscription]);
         } else {
             return $next($request);
         }
