@@ -100,7 +100,8 @@ class SubscriptionController extends Controller
     {
         //If client_token is not stable we have change this request with device_id or udid
         $validationRules = [
-            'client_token' => 'required|max:36|exists:devices,client_token'
+            'client_token' => 'required|max:36|exists:devices,client_token',
+            'app_id' => 'required|exists:applications,id'
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -121,8 +122,8 @@ class SubscriptionController extends Controller
             ]);
         }
 
-        $requestData = $request->only(['client_token']);
-        $subscription = Subscription::where('client_token', $requestData['client_token'])
+        $requestData = $request->only(['client_token','app_id']);
+        $subscription = Subscription::where('client_token', $requestData['client_token'])->where('app_id',$requestData['app_id'])
             ->whereDate('expire_date', '>', Carbon::now()->utcOffset(-360)->format('Y-m-d H:i:s'))
             ->first();
 
