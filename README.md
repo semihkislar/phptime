@@ -7,4 +7,4 @@
 - Run migration         ``docker-compose exec php php artisan migrate``
 
 
-#### Post History https://www.getpostman.com/collections/e11da1c35bf09364bde1
+#### Post History https://documenter.getpostman.com/view/5955628/TzzGFsYb
