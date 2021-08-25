@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Validator;
 
 class MockApiController extends Controller
 {
-    //
-
     public function google(Request $request)
     {
         $validator = Validator::make(request()->all(), [
@@ -66,4 +64,5 @@ class MockApiController extends Controller
 
         return response()->json($response);
     }
+    
 }

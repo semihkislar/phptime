@@ -10,15 +10,6 @@ use Illuminate\Support\Facades\Cache;
 
 class DeviceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
     public function register(Request $request)
     {
@@ -66,4 +57,5 @@ class DeviceController extends Controller
     {
         return Str::uuid()->toString();
     }
+
 }

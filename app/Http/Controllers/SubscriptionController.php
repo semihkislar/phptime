@@ -11,16 +11,6 @@ use Illuminate\Support\Facades\Cache;
 
 class SubscriptionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
     public function checkMock(Request $request)
     {
         //If client_token is not stable we have change this request with device_id or udid
@@ -139,4 +129,5 @@ class SubscriptionController extends Controller
         }
 
     }
+
 }
