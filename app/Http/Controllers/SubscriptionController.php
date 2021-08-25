@@ -59,11 +59,11 @@ class SubscriptionController extends Controller
 
         $recieptData = $request->only(['client_token', 'reciept', 'app_id', 'os']);
 
-        if (Subscription::where('client_token', $recieptData['client_token'])->where('app_id', $recieptData['app_id'])->exists()) {
+        $subscription = Subscription::where('client_token', $recieptData['client_token'])
+            ->where('app_id', $recieptData['app_id'])
+            ->first();
 
-            $subscription = Subscription::where('client_token', $recieptData['client_token'])
-                ->where('app_id', $recieptData['app_id'])
-                ->first();
+        if ($subscription) {
 
             return response()->json([
                 'status' => 'success',
@@ -122,8 +122,8 @@ class SubscriptionController extends Controller
             ]);
         }
 
-        $requestData = $request->only(['client_token','app_id']);
-        $subscription = Subscription::where('client_token', $requestData['client_token'])->where('app_id',$requestData['app_id'])
+        $requestData = $request->only(['client_token', 'app_id']);
+        $subscription = Subscription::where('client_token', $requestData['client_token'])->where('app_id', $requestData['app_id'])
             ->whereDate('expire_date', '>', Carbon::now()->utcOffset(-360)->format('Y-m-d H:i:s'))
             ->first();
 
