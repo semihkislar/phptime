@@ -30,7 +30,6 @@ class DeviceController extends Controller
             $validationErrors = $validator->failed();
 
             if (isset($validationErrors['udid']['Unique'])) {
-                
                 $device = Device::where('udid', $deviceData['udid'])->first();
                 Cache::put('device:' . $deviceData['udid'] . ":" . $deviceData['app_id'], $device);
 
@@ -38,9 +37,7 @@ class DeviceController extends Controller
             }
 
             if (isset($validationErrors['app_id']['Exists'])) {
-
                 return Response::error('This device already registered this app.');
-
             }
 
             return Response::error('Invalid Request');

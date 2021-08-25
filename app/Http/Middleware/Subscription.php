@@ -19,14 +19,11 @@ class Subscription
     {
         $requestData = $request->only(['client_token', 'app_id']);
         if (Cache::has("subscription:" . $requestData['client_token'] . ":" . $requestData['app_id'])) {
-
             $subscription = Cache::get("subscription:" . $requestData['client_token'] . ":" . $requestData['app_id']);
+
             return response()->json(['device' => $subscription], 200);
-
         } else {
-
             return $next($request);
-
         }
 
     }

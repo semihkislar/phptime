@@ -37,7 +37,6 @@ class SubscriptionController extends Controller
             }
 
             return Response::error('Invalid Request');
-
         }
 
         $recieptData = $request->only(['client_token', 'reciept', 'app_id', 'os']);
@@ -47,8 +46,8 @@ class SubscriptionController extends Controller
             ->first();
 
         if ($subscription) {
-        return Response::success([ 'subscription' => $subscription]);
-    }
+            return Response::success(['subscription' => $subscription]);
+        }
 
         //If client_token is not stable we have change this request with device_id or udid
         $requestResponse = Http::post('http://nginx:80/api/google-mock-api', [
@@ -101,7 +100,7 @@ class SubscriptionController extends Controller
             ->first();
 
         if ($subscription) {
-            return Response::success(['subscription' =>$subscription]);
+            return Response::success(['subscription' => $subscription]);
         } else {
             return Response::error('There is no subscription');
         }

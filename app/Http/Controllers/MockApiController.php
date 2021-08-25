@@ -19,7 +19,7 @@ class MockApiController extends Controller
         if ($validator->fails()) {
 
             return Response::error('Invalid Request');
-            
+
         }
 
         $lastCharacter = intval(substr($request->post('reciept'), -1));
@@ -58,9 +58,7 @@ class MockApiController extends Controller
         ];
 
         if ($status) {
-
             $response['expire-date'] = Carbon::now()->addDays(rand(1, 365))->utcOffset(-360)->format('Y-m-d H:i:s');
-
         }
 
         return Response::success($response);

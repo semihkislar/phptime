@@ -19,14 +19,11 @@ class Device
     {
         $requestData = $request->only(['udid', 'app_id']);
         if (Cache::has("device:" . $requestData['udid'] . ":" . $requestData['app_id'])) {
-
             $device = $device = Cache::get("device:" . $requestData['udid'] . ":" . $requestData['app_id']);
             return response()->json(['device' => $device], 200);
 
         } else {
-
             return $next($request);
-            
         }
     }
 }
