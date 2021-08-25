@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Device;
+use App\Services\ApiService\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -29,22 +30,20 @@ class DeviceController extends Controller
             $validationErrors = $validator->failed();
 
             if (isset($validationErrors['udid']['Unique'])) {
+                
                 $device = Device::where('udid', $deviceData['udid'])->first();
                 Cache::put('device:' . $deviceData['udid'] . ":" . $deviceData['app_id'], $device);
-                return response()->json(['device' => $device]);
+
+                return Response::success(['device' => $device]);
             }
 
             if (isset($validationErrors['app_id']['Exists'])) {
-                return response()->json([
-                    'status' => 'failure',
-                    'error' => 'No application with this app_id',
-                ]);
+
+                return Response::error('This device already registered this app.');
+
             }
 
-            return response()->json([
-                'status' => 'failure',
-                'error' => 'Invalid Request',
-            ]);
+            return Response::error('Invalid Request');
         }
 
         $device = Device::create($deviceData);

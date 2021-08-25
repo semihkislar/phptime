@@ -26,8 +26,7 @@ class Device
         } else {
 
             return $next($request);
-
+            
         }
     }
-
 }

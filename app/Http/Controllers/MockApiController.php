@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ApiService\Response;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,10 +17,9 @@ class MockApiController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'failure',
-                'error' => 'Invalid Request',
-            ]);
+
+            return Response::error('Invalid Request');
+            
         }
 
         $lastCharacter = intval(substr($request->post('reciept'), -1));
@@ -33,7 +33,7 @@ class MockApiController extends Controller
             $response['expire-date'] = Carbon::now()->addDays(rand(1, 365))->utcOffset(-360)->format('Y-m-d H:i:s');
         }
 
-        return response()->json($response);
+        return Response::success($response);
     }
 
     public function apple(Request $request)
@@ -45,10 +45,9 @@ class MockApiController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'failure',
-                'error' => 'Invalid Request',
-            ]);
+
+            return Response::error('Invalid Request');
+
         }
 
         $lastCharacter = intval(substr($request->post('reciept'), -1));
@@ -59,10 +58,12 @@ class MockApiController extends Controller
         ];
 
         if ($status) {
+
             $response['expire-date'] = Carbon::now()->addDays(rand(1, 365))->utcOffset(-360)->format('Y-m-d H:i:s');
+
         }
 
-        return response()->json($response);
+        return Response::success($response);
     }
-    
+
 }
